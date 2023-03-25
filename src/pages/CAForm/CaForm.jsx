@@ -58,7 +58,7 @@ const CaForm = () => {
   return (
     <div className="d-flex justify-content-center flex-column align-items-center">
         <h1 className="m-3">CA Form Responses</h1>
-      <Table striped bordered hover>
+      <Table responsive striped bordered hover >
         <thead>
           <tr>
             <th>#</th>
