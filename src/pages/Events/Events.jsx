@@ -18,7 +18,12 @@ const Events = () => {
       console.log(response);
       console.log(url);
       const data = await response.json();
-      setEvents(data);
+      // Check if data is an array before setting state
+      if (Array.isArray(data)) {
+        setEvents(data);
+      } else {
+        console.error("Error: Response data is not an array", data);
+      }
     } catch (error) {
       console.error("Error fetching events data:", error);
     }
@@ -36,10 +41,20 @@ const Events = () => {
             <th>Image URL</th>
             <th>Overview</th>
             <th>Status</th>
-            <th>Contacts List</th>
-            <th>Participants List</th>
           </tr>
         </thead>
+        <tbody>
+          {events.map((event, index) => (
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>{event.eventName}</td>
+              <td>{event.link}</td>
+              <td>{event.imageURL}</td>
+              <td>{event.overview}</td>
+              <td>{event.status}</td>
+            </tr>
+          ))}
+        </tbody>
       </Table>
       <Link to="/" className="btn btn-primary m-3">
         Back to Home

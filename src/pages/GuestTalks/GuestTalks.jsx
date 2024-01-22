@@ -18,9 +18,14 @@ const GuestTalks = () => {
       console.log(response);
       console.log(url);
       const data = await response.json();
-      setGuestTalks(data);
+      // Check if data is an array before setting state
+      if (Array.isArray(data)) {
+        setGuestTalks(data);
+      } else {
+        console.error("Error: Response data is not an array", data);
+      }
     } catch (error) {
-      console.error("Error fetching guestTalks data:", error);
+      console.error("Error fetching guest talks data:", error);
     }
   };
 
@@ -40,6 +45,18 @@ const GuestTalks = () => {
             <th>Participants List</th>
           </tr>
         </thead>
+        <tbody>
+          {guestTalks.map((guestTalk, index) => (
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>{guestTalk.guestTalkName}</td>
+              <td>{guestTalk.link}</td>
+              <td>{guestTalk.imageURL}</td>
+              <td>{guestTalk.overview}</td>
+              <td>{guestTalk.status}</td>
+            </tr>
+          ))}
+        </tbody>
       </Table>
       <Link to="/" className="btn btn-primary m-3">
         Back to Home
