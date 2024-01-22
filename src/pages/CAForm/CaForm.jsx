@@ -4,6 +4,8 @@ import { getFirestore, getDocs, collection } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL  } from "firebase/storage";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
+import { Link } from "react-router-dom";
+
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -89,6 +91,9 @@ const CaForm = () => {
           ))}
         </tbody>
       </Table>
+      <Link to="/" className="btn btn-primary m-3">
+        Back to Home
+      </Link>
     </div>
   );
 };

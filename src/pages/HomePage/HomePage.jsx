@@ -13,7 +13,18 @@ const HomePage = () => {
         <Button className="m-1" variant="primary" onClick={()=> {navigate("/newsletter")}}>
           Newsletter Responses
         </Button>
-        
+        <Button className="m-1" variant="primary" onClick={()=> {navigate("/users")}}>
+          User List
+        </Button>
+        <Button className="m-1" variant="primary" onClick={()=> {navigate("/events")}}>
+          Event List
+        </Button>
+        <Button className="m-1" variant="primary" onClick={()=> {navigate("/preevents")}}>
+          Pre-event List
+        </Button>
+        <Button className="m-1" variant="primary" onClick={()=> {navigate("/guesttalks")}}>
+          Guest Talk List
+        </Button>
      
     </div>
   );

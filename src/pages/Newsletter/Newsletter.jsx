@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import { initializeApp } from "firebase/app";
 import { getFirestore, getDocs, collection } from "firebase/firestore";
+import { Link } from "react-router-dom";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -59,6 +60,9 @@ const Newsletter = () => {
 
         </tbody>
       </Table>
+      <Link to="/" className="btn btn-primary m-3">
+        Back to Home
+      </Link>
     </div>
   );
 };
