@@ -6,6 +6,8 @@ import Users from "./pages/Users/Users";
 import Events from "./pages/Events/Events";
 import PreEvents from "./pages/PreEvents/PreEvents";
 import GuestTalks from "./pages/GuestTalks/GuestTalks";
+import AddEvent from "./pages/Events/AddEvent";
+import EditEvent from "./pages/Events/EditEvent";
 function App() {
   return (
     <div className="App">
@@ -18,6 +20,8 @@ function App() {
           <Route exact path="/events" element={<Events />} />
           <Route exact path="/preevents" element={<PreEvents />} />
           <Route exact path="/guesttalks" element={<GuestTalks />} />
+          <Route exact path="/addevent" element={<AddEvent />} />
+          <Route exact path="/editevent" element={<EditEvent />} />
         </Routes>
       </BrowserRouter>
     </div>
