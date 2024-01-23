@@ -8,7 +8,7 @@ const Events = () => {
   const url = process.env.REACT_APP_BASE_URL;
   useEffect(() => {
     fetchEventsData();
-  }, []);
+  },);
 
   const openImage = (imageURL) => {
     console.log(imageURL);
