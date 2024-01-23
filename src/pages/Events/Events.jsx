@@ -1,17 +1,27 @@
 import React, { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import { Link } from "react-router-dom";
+import Button from "react-bootstrap/Button";
 
 const Events = () => {
   const [events, setEvents] = useState([]);
-
+  const url = process.env.REACT_APP_BASE_URL;
   useEffect(() => {
     fetchEventsData();
   }, []);
 
+  const openImage = (imageURL) => {
+    console.log(imageURL);
+    try {
+      window.open(imageURL, "_blank")
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
+
   const fetchEventsData = async () => {
     try {
-      const url = process.env.REACT_APP_BASE_URL;
       const response = await fetch(`${url}/admin/event`, {
         method: "GET",
       });
@@ -19,13 +29,40 @@ const Events = () => {
       console.log(url);
       const data = await response.json();
       // Check if data is an array before setting state
-      if (Array.isArray(data)) {
-        setEvents(data);
+      const eventData = data.result || data;
+
+      if (Array.isArray(eventData)) {
+        setEvents(eventData);
       } else {
         console.error("Error: Response data is not an array", data);
       }
     } catch (error) {
       console.error("Error fetching events data:", error);
+    }
+  };
+
+  const handleDelete = async (eventName) => {
+    try {
+      const deleteEvent = `${url}/admin/deleteEvent/events`;
+
+      // Send a DELETE request with the event name
+      const response = await fetch(deleteEvent, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ eventName: eventName }),
+      });
+
+      if (response.ok) {
+        console.log(`Event with Name ${eventName} deleted successfully.`);
+        // Fetch the updated events data after deletion
+        fetchEventsData();
+      } else {
+        console.error(`Failed to delete event with Name ${eventName}`);
+      }
+    } catch (error) {
+      console.error("Error deleting event:", error);
     }
   };
 
@@ -38,9 +75,13 @@ const Events = () => {
             <th>#</th>
             <th>Event Name</th>
             <th>Link</th>
-            <th>Image URL</th>
+            <th>Image</th>
             <th>Overview</th>
             <th>Status</th>
+            <th>Type</th>
+            <th>Contacts</th>
+            <th>Participants</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -49,16 +90,51 @@ const Events = () => {
               <td>{index + 1}</td>
               <td>{event.eventName}</td>
               <td>{event.link}</td>
-              <td>{event.imageURL}</td>
+              <td>{
+                <Button onClick={() => openImage(event.imageURL)}>Open Image</Button>
+              }</td>
               <td>{event.overview}</td>
-              <td>{event.status}</td>
+              <td>{event.status ? 'Active' : 'Inactive'}</td>
+              <td>{event.teamEvent ? 'Team' : 'Individual'}</td>
+              <td>
+                {event.contacts.map((contact, contactIndex) => (
+                  <div key={contactIndex}>{contact.name} - {contact.mobile}</div>
+                ))}
+              </td>
+              <td>
+                {/* View Participants Button */}
+                <Button
+                  variant="success"
+                // onClick={() => handleViewParticipants(event.id)}
+                >
+                  View
+                </Button>
+              </td>
+              <td>
+                {/* Edit Button */}
+                <Link to={`/editevent`} state= { event } className="btn btn-info mr-2">
+                  Edit
+                </Link>
+                {/* Delete Button */}
+                <Button
+                  variant="danger"
+                  onClick={() => handleDelete(event.eventName)}
+                >
+                  Delete
+                </Button>
+              </td>
             </tr>
           ))}
         </tbody>
       </Table>
-      <Link to="/" className="btn btn-primary m-3">
-        Back to Home
-      </Link>
+      <div className="d-flex justify-content-center flex-row align-items-center">
+        <Link to="/addevent" className="btn btn-primary m-3">
+          Add Events
+        </Link>
+        <Link to="/" className="btn btn-primary m-3">
+          Back to Home
+        </Link>
+      </div>
     </div>
   );
 };
