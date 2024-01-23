@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL, uploadBytes } from "firebase/storage";
 
 const firebaseConfig = {
@@ -15,7 +14,6 @@ const firebaseConfig = {
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
-const db = getFirestore(firebaseApp);
 const storage = getStorage(firebaseApp);
 const url = process.env.REACT_APP_BASE_URL;
 
