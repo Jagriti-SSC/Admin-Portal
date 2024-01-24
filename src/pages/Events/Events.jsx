@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
+import { ListGroup } from "react-bootstrap";
 
 const Events = () => {
   const [events, setEvents] = useState([]);
@@ -97,18 +98,17 @@ const Events = () => {
               <td>{event.status ? 'Active' : 'Inactive'}</td>
               <td>{event.teamEvent ? 'Team' : 'Individual'}</td>
               <td>
+                <ListGroup>
                 {event.contacts.map((contact, contactIndex) => (
-                  <div key={contactIndex}>{contact.name} - {contact.mobile}</div>
+                  <ListGroup.Item key={contactIndex}>{contact.name} - {contact.mobile}</ListGroup.Item>
                 ))}
+                </ListGroup>
               </td>
               <td>
                 {/* View Participants Button */}
-                <Button
-                  variant="success"
-                // onClick={() => handleViewParticipants(event.id)}
-                >
+                <Link to={`/eparticipants`} state= { event } className="btn btn-success mr-2">
                   View
-                </Button>
+                </Link>
               </td>
               <td>
                 {/* Edit Button */}

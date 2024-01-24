@@ -8,6 +8,13 @@ import PreEvents from "./pages/PreEvents/PreEvents";
 import GuestTalks from "./pages/GuestTalks/GuestTalks";
 import AddEvent from "./pages/Events/AddEvent";
 import EditEvent from "./pages/Events/EditEvent";
+import EParticipant from "./pages/Events/EParticipants";
+import AddGuestTalk from "./pages/GuestTalks/AddGuestTalk";
+import EditGuestTalk from "./pages/GuestTalks/EditGuestTalk";
+import GParticipants from "./pages/GuestTalks/GParticipants";
+import AddPreEvent from "./pages/PreEvents/AddPreEvent";
+import EditPreEvent from "./pages/PreEvents/EditPreEvent";
+import PParticipants from "./pages/PreEvents/PParticipants";
 function App() {
   return (
     <div className="App">
@@ -22,6 +29,13 @@ function App() {
           <Route exact path="/guesttalks" element={<GuestTalks />} />
           <Route exact path="/addevent" element={<AddEvent />} />
           <Route exact path="/editevent" element={<EditEvent />} />
+          <Route exact path="/eparticipants" element={<EParticipant />} />
+          <Route exact path="/addguesttalk" element={<AddGuestTalk />} />
+          <Route exact path="/editguesttalk" element={<EditGuestTalk />} />
+          <Route exact path="/gparticipants" element={<GParticipants />} />
+          <Route exact path="/addpreevent" element={<AddPreEvent />} />
+          <Route exact path="/editpreevent" element={<EditPreEvent />} />
+          <Route exact path="/pparticipants" element={<PParticipants />} />
         </Routes>
       </BrowserRouter>
     </div>
