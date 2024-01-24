@@ -1,17 +1,28 @@
 import React, { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import { Link } from "react-router-dom";
+import Button from "react-bootstrap/Button";
+import { ListGroup } from "react-bootstrap";
 
 const PreEvents = () => {
-  const [preEvents, setPreEvents] = useState([]);
-
+  const [events, setPreEvents] = useState([]);
+  const url = process.env.REACT_APP_BASE_URL;
   useEffect(() => {
     fetchPreEventsData();
-  }, []);
+  },);
+
+  const openImage = (imageURL) => {
+    console.log(imageURL);
+    try {
+      window.open(imageURL, "_blank")
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
 
   const fetchPreEventsData = async () => {
     try {
-      const url = process.env.REACT_APP_BASE_URL;
       const response = await fetch(`${url}/admin/preEvent`, {
         method: "GET",
       });
@@ -19,13 +30,40 @@ const PreEvents = () => {
       console.log(url);
       const data = await response.json();
       // Check if data is an array before setting state
-      if (Array.isArray(data)) {
-        setPreEvents(data);
+      const eventData = data.result || data;
+
+      if (Array.isArray(eventData)) {
+        setPreEvents(eventData);
       } else {
         console.error("Error: Response data is not an array", data);
       }
     } catch (error) {
-      console.error("Error fetching preEvents data:", error);
+      console.error("Error fetching events data:", error);
+    }
+  };
+
+  const handleDelete = async (eventName) => {
+    try {
+      const deletePreEvent = `${url}/admin/deleteEvent/preEvents`;
+
+      // Send a DELETE request with the event name
+      const response = await fetch(deletePreEvent, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ eventName: eventName }),
+      });
+
+      if (response.ok) {
+        console.log(`Pre Event with Name ${eventName} deleted successfully.`);
+        // Fetch the updated events data after deletion
+        fetchPreEventsData();
+      } else {
+        console.error(`Failed to delete event with Name ${eventName}`);
+      }
+    } catch (error) {
+      console.error("Error deleting event:", error);
     }
   };
 
@@ -38,27 +76,65 @@ const PreEvents = () => {
             <th>#</th>
             <th>Pre Event Name</th>
             <th>Link</th>
-            <th>Image URL</th>
+            <th>Image</th>
             <th>Overview</th>
             <th>Status</th>
+            <th>Type</th>
+            <th>Contacts</th>
+            <th>Participants</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {preEvents.map((preEvent, index) => (
+          {events.map((event, index) => (
             <tr key={index}>
               <td>{index + 1}</td>
-              <td>{preEvent.preEventName}</td>
-              <td>{preEvent.link}</td>
-              <td>{preEvent.imageURL}</td>
-              <td>{preEvent.overview}</td>
-              <td>{preEvent.status}</td>
+              <td>{event.eventName}</td>
+              <td>{event.link}</td>
+              <td>{
+                <Button onClick={() => openImage(event.imageURL)}>Open Image</Button>
+              }</td>
+              <td>{event.overview}</td>
+              <td>{event.status ? 'Active' : 'Inactive'}</td>
+              <td>{event.teamEvent ? 'Team' : 'Individual'}</td>
+              <td>
+                <ListGroup>
+                {event.contacts.map((contact, contactIndex) => (
+                  <ListGroup.Item key={contactIndex}>{contact.name} - {contact.mobile}</ListGroup.Item>
+                ))}
+                </ListGroup>
+              </td>
+              <td>
+                {/* View Participants Button */}
+                <Link to={`/pparticipants`} state= { event } className="btn btn-success mr-2">
+                  View
+                </Link>
+              </td>
+              <td>
+                {/* Edit Button */}
+                <Link to={`/editpreevent`} state= { event } className="btn btn-info mr-2">
+                  Edit
+                </Link>
+                {/* Delete Button */}
+                <Button
+                  variant="danger"
+                  onClick={() => handleDelete(event.eventName)}
+                >
+                  Delete
+                </Button>
+              </td>
             </tr>
           ))}
         </tbody>
       </Table>
-      <Link to="/" className="btn btn-primary m-3">
-        Back to Home
-      </Link>
+      <div className="d-flex justify-content-center flex-row align-items-center">
+        <Link to="/addpreevent" className="btn btn-primary m-3">
+          Add Pre Events
+        </Link>
+        <Link to="/" className="btn btn-primary m-3">
+          Back to Home
+        </Link>
+      </div>
     </div>
   );
 };

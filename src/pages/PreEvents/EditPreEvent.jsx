@@ -17,7 +17,7 @@ const firebaseApp = initializeApp(firebaseConfig);
 const storage = getStorage(firebaseApp);
 const url = process.env.REACT_APP_BASE_URL;
 
-const EditEvent = () => {
+const EditPreEvent = () => {
     const location = useLocation();
     const { state } = location;
     const event = state ? state : null;
@@ -77,7 +77,7 @@ const EditEvent = () => {
             };
 
             // PUT request to update the event
-            await fetch(`${url}/admin/updateEvent/events`, {
+            await fetch(`${url}/admin/updateEvent/preEvents`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -96,7 +96,7 @@ const EditEvent = () => {
         }
 
         // Upload the new image to Firebase Storage
-        const storageRef = ref(storage, `events/${newEventImage.name}`);
+        const storageRef = ref(storage, `pre-events/${newEventImage.name}`);
         await uploadBytes(storageRef, newEventImage);
 
         // Get the download URL of the uploaded new image
@@ -107,30 +107,30 @@ const EditEvent = () => {
 
     return (
         <div className="container">
-            <h1>Edit Event</h1>
+            <h1>Edit Pre Event</h1>
             <form onSubmit={onSubmit}>
                 <div className="mb-3">
-                    <label className="form-label">Event Name:</label>
+                    <label className="form-label">Pre Event Name:</label>
                     <input type="text" className="form-control" value={newEventName} onChange={(e) => setNewEventName(e.target.value)} required />
                 </div>
 
                 <div className="mb-3">
-                    <label className="form-label">Event Link:</label>
+                    <label className="form-label">Pre Event Link:</label>
                     <input type="text" className="form-control" value={newEventLink} onChange={(e) => setNewEventLink(e.target.value)} required />
                 </div>
 
                 <div className="mb-3">
-                    <label className="form-label">Event Image:</label>
+                    <label className="form-label">Pre Event Image:</label>
                     <input type="file" className="form-control" onChange={handleImageUpload} />
                 </div>
 
                 <div className="mb-3">
-                    <label className="form-label">Event Overview:</label>
+                    <label className="form-label">Pre Event Overview:</label>
                     <textarea className="form-control" value={newEventOverview} onChange={(e) => setNewEventOverview(e.target.value)} required />
                 </div>
 
                 <div className="mb-3">
-                    <label className="form-label">Event Status:</label>
+                    <label className="form-label">Pre Event Status:</label>
                     <select className="form-select" value={newEventStatus ? "true" : "false"} onChange={(e) => setNewEventStatus(e.target.value === "true")} required>
                         <option value="true">Active</option>
                         <option value="false">Inactive</option>
@@ -138,7 +138,7 @@ const EditEvent = () => {
                 </div>
 
                 <div className="mb-3">
-                    <label className="form-label">Event Type:</label>
+                    <label className="form-label">Pre Event Type:</label>
                     <select className="form-select" value={newEventType ? "true" : "false"} onChange={(e) => setNewEventType(e.target.value === "true")} required>
                         <option value="true">Team</option>
                         <option value="false">Individual</option>
@@ -176,14 +176,14 @@ const EditEvent = () => {
                 </div>
 
                 <button type="submit" className="btn btn-primary">
-                    Update Event
+                    Update Pre Event
                 </button>
             </form>
-            <Link to={`/events`} className="btn btn-primary m-3">
-                Back to Event Details
+            <Link to={`/preevents`} className="btn btn-primary m-3">
+                Back to Pre Event Details
             </Link>
         </div>
     );
 };
 
-export default EditEvent;
+export default EditPreEvent;
