@@ -23,7 +23,7 @@ const PreEvents = () => {
 
   const fetchPreEventsData = async () => {
     try {
-      const response = await fetch(`${url}/admin/preEvent`, {
+      const response = await fetch(`${url}/admin/preEvents`, {
         method: "GET",
       });
       console.log(response);
