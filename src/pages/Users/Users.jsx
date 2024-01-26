@@ -53,19 +53,22 @@ const Users = () => {
               <td>{user.course}</td>
               <td>{user.year}</td>
               <td>
-                {user.event.map((event, eventIndex) => (
-                  <div key={eventIndex}>{event.eventName} - {event.status}</div>
-                ))}
+                {/* View events Button */}
+                <Link to={`/uevent`} state= { user } className="btn btn-success mr-2">
+                  View
+                </Link>
               </td>
               <td>
-                {user.preEvents.map((preEvent, preEventIndex) => (
-                  <div key={preEventIndex}>{preEvent.eventName} - {preEvent.status}</div>
-                ))}
+                {/* View pre events Button */}
+                <Link to={`/upreevent`} state= { user } className="btn btn-success mr-2">
+                  View
+                </Link>
               </td>
               <td>
-                {user.guestTalks.map((guestTalk, guestTalkIndex) => (
-                  <div key={guestTalkIndex}>{guestTalk.eventName} - {guestTalk.status}</div>
-                ))}
+                {/* View guest talks Button */}
+                <Link to={`/uguesttalk`} state= { user } className="btn btn-success mr-2">
+                  View
+                </Link>
               </td>
             </tr>
           ))}

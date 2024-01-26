@@ -3,6 +3,9 @@ import CaForm from "./pages/CAForm/CaForm";
 import HomePage from "./pages/HomePage/HomePage";
 import Newsletter from "./pages/Newsletter/Newsletter";
 import Users from "./pages/Users/Users";
+import UEvent from "./pages/Users/UEvent";
+import UPreEvent from "./pages/Users/UPreEvent";
+import UGuestTalk from "./pages/Users/UGuestTalk";
 import Events from "./pages/Events/Events";
 import PreEvents from "./pages/PreEvents/PreEvents";
 import GuestTalks from "./pages/GuestTalks/GuestTalks";
@@ -36,6 +39,9 @@ function App() {
           <Route exact path="/addpreevent" element={<AddPreEvent />} />
           <Route exact path="/editpreevent" element={<EditPreEvent />} />
           <Route exact path="/pparticipants" element={<PParticipants />} />
+          <Route exact path="/uevent" element={<UEvent />} />
+          <Route exact path="/upreevent" element={<UPreEvent />} />
+          <Route exact path="/uguesttalk" element={<UGuestTalk />} />
         </Routes>
       </BrowserRouter>
     </div>
