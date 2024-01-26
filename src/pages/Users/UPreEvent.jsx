@@ -33,6 +33,7 @@ const UserPreEvents = () => {
       
                 const eventData = await response.json();
                 eventsData.push({
+                  _id: event.eventName,
                   eventName: eventData.eventName,
                   status: event.status,
                 });
@@ -60,6 +61,50 @@ const UserPreEvents = () => {
     }
   }, [user]);
 
+  const handleStatusChange = async (_id, newStatus) => {
+    try {
+      // Update the status locally in the component
+      setUserEvents((prevUserEvents) =>
+        prevUserEvents.map((event) =>
+          event._id === _id
+            ? { ...event, status: newStatus }
+            : { ...event }
+        )
+      );
+  
+      // Prepare the data for the API call
+      const updateUserEndpoint = `${url}/auth/updateUser`;
+  
+      // Create a new array with the updated event and keep the rest
+      const updatedEvents = userEvents.map((event) => ({
+        eventName: event._id, // Use _id as eventName
+        status: event._id === _id ? newStatus : event.status,
+      }));
+
+      const updatedUser = {
+        email: user.email,
+        newData: { preEvents: updatedEvents },
+      };
+  
+      // Make the API call to update the status in the backend
+      const response = await fetch(updateUserEndpoint, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedUser),
+      });
+      console.log(JSON.stringify(updatedUser));
+      if (!response.ok) {
+        throw new Error(`Failed to update user: ${response.status}`);
+      }
+  
+      console.log("User status updated successfully");
+    } catch (error) {
+      console.error("Error updating user status:", error);
+    }
+  };
+
   if (!user) {
     return <div>Loading...</div>;
   }
@@ -81,7 +126,18 @@ const UserPreEvents = () => {
               <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{userEvent.eventName}</td>
-                <td>{userEvent.status}</td>
+                <td>
+                  <select
+                    value={userEvent.status}
+                    onChange={(e) =>
+                      handleStatusChange(userEvent._id, e.target.value)
+                    }
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="Verified">Verified</option>
+                    {/* Add other status options as needed */}
+                  </select>
+                </td>
               </tr>
             ))}
           </tbody>
