@@ -12,6 +12,57 @@ const GParticipant = () => {
   const event = state ? state : null;
   const [participants, setParticipants] = useState([]);
 
+  const handleStatusChange = async (_id, newStatus) => {
+    try {
+      setParticipants((prevParticipants) =>
+        prevParticipants.map((participant) =>
+          participant._id === _id
+            ? { ...participant, status: newStatus }
+            : participant
+        )
+      );
+  
+      const updateEventEndpoint = `${url}/admin/updateEvent/guestTalks`;
+  
+      const updatedParticipants = participants.reduce(
+        (acc, participant) => {
+          if (participant._id === _id) {
+            // Check if it's a team event
+            if (event.teamEvent) {
+              acc.teams.push(participant._id);
+            } else {
+              // It's an individual event
+              acc.individuals.push(participant._id);
+            }
+          }
+          return acc;
+        },
+        { teams: [], individuals: [], status: newStatus }
+      );
+  
+      const updatedEventData = {
+        eventName: event.eventName,
+        updatedBody: { participants: updatedParticipants },
+      };
+  
+      const response = await fetch(updateEventEndpoint, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedEventData),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to update event: ${response.status}`);
+      }
+  
+      console.log("Event status updated successfully");
+    } catch (error) {
+      console.error("Error updating event status:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchParticipants = async () => {
       try {
@@ -55,9 +106,11 @@ const GParticipant = () => {
 
               const membersData = await Promise.all(memberPromises);
               participantsData.push({
+                _id: data._id,
                 teamName: data.teamName,
                 teamLeader: leaderData.name,
                 members: membersData,
+                status: event.participants.status,
               });
             });
             await Promise.all(teamPromises);
@@ -71,7 +124,11 @@ const GParticipant = () => {
                 body: JSON.stringify({ _id: user }),
               });
               const data = await response.json();
-              participantsData.push(data);
+              participantsData.push({
+                _id: data._id,
+                ...data,
+                status: event.participants.status,
+              });
             });
             await Promise.all(userPromises);
           }
@@ -103,6 +160,8 @@ const GParticipant = () => {
               <th>{event.teamEvent ? "Team Name" : "Participant Name"}</th>
               {event.teamEvent && <th>Team Leader</th>}
               {event.teamEvent && <th>Team Members</th>}
+              <th>Status</th>
+              <th>Update Status</th>
             </tr>
           </thead>
           <tbody>
@@ -120,6 +179,19 @@ const GParticipant = () => {
                     </ListGroup>
                   </td>
                 )}
+                <td>{participant.status}</td>
+                <td>
+                  <select
+                    value={participant.status}
+                    onChange={(e) =>
+                      handleStatusChange(participant._id, e.target.value)
+                    }
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="Verified">Verified</option>
+                    {/* Add other status options as needed */}
+                  </select>
+                </td>
               </tr>
             ))}
           </tbody>
