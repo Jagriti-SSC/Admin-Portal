@@ -15,12 +15,17 @@ import GParticipants from "./pages/GuestTalks/GParticipants";
 import AddPreEvent from "./pages/PreEvents/AddPreEvent";
 import EditPreEvent from "./pages/PreEvents/EditPreEvent";
 import PParticipants from "./pages/PreEvents/PParticipants";
+import Login from "./Login";
+import { useState } from "react";
 function App() {
+
+  const [logged, setLogged] = useState(false);
+
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-        <Route exact path="/" element={<HomePage />} />
+          <Route exact path="/" element={logged ? <HomePage /> : <Login setLogged={setLogged}/>}  />
           <Route exact path="/ca" element={<CaForm />} />
           <Route exact path="/newsletter" element={<Newsletter />} />
           <Route exact path="/users" element={<Users />} />
