@@ -2,19 +2,19 @@
 
 import React, { useState } from "react";
 
-const Login = ({setLogged}) => {
+const Login = ({ setLogged }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const backendhost = "http://localhost:8000"
-     try {
+    const backendhost = "http://localhost:8000";
+    try {
       const response = await fetch(`${backendhost}/auth/admin`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: email,
@@ -23,22 +23,20 @@ const Login = ({setLogged}) => {
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
 
       const data = await response.json();
 
-      console.log(data);
-      if(data.status === "ok") setLogged(true);
-      else{
+      if (data.status === "ok") {
+        setLogged(true);
+        sessionStorage.setItem("jagritisession76", email);
+      } else {
         setErrorMessage(data.message);
       }
-
     } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
+      console.error("There was a problem with the fetch operation:", error);
     }
-    console.log("Email:", email);
-    console.log("Password:", password);
   };
 
   return (

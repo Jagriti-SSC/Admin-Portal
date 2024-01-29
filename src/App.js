@@ -16,10 +16,20 @@ import AddPreEvent from "./pages/PreEvents/AddPreEvent";
 import EditPreEvent from "./pages/PreEvents/EditPreEvent";
 import PParticipants from "./pages/PreEvents/PParticipants";
 import Login from "./Login";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+
 function App() {
 
   const [logged, setLogged] = useState(false);
+  useEffect(()=>{
+    console.log(sessionStorage.getItem("jagritisession76"))
+    if(sessionStorage.getItem("jagritisession76") === null) {
+      setLogged(false);
+      if (window.location.href === "http://localhost:3000/") console.log(window.location.href)
+      else window.location.href = "/";
+    };
+  }, []);
 
   return (
     <div className="App">

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const HomePage = () => {
     const navigate = useNavigate();
   return (
-      
+
       <div className="d-flex justify-content-center align-items-center flex-column">
         <h1 className="m-2">Admin Portal</h1>
         <Button className="m-1" variant="primary" onClick={()=> {navigate("/ca")}}>
@@ -25,7 +25,7 @@ const HomePage = () => {
         <Button className="m-1" variant="primary" onClick={()=> {navigate("/guesttalks")}}>
           Guest Talk List
         </Button>
-     
+
     </div>
   );
 };

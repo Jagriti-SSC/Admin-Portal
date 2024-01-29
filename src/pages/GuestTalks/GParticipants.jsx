@@ -28,7 +28,7 @@ const GParticipant = () => {
                 body: JSON.stringify({ _id: team }),
               });
               const data = await response.json();
-              
+
               const leaderResponse = await fetch(`${url}/auth/userByID`, {
                 method: "POST",
                 headers: {
