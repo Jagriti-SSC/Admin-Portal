@@ -76,7 +76,7 @@ const AddPreEvent = () => {
             });
 
             // Optionally, you can make a GET request to verify the data
-            const response = await fetch(`${url}/admin/preEvent`, {
+            const response = await fetch(`${url}/admin/preEvents`, {
                 method: "GET",
             });
 

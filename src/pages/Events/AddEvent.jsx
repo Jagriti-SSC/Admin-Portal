@@ -64,7 +64,7 @@ const AddEvent = () => {
                 contacts: contacts,
             };
 
-            console.log(eventData);
+            console.log(JSON.stringify(eventData));
 
             // POST request
             await fetch(`${url}/admin/createEvent/addEvent`, {
@@ -76,7 +76,7 @@ const AddEvent = () => {
             });
 
             // Optionally, you can make a GET request to verify the data
-            const response = await fetch(`${url}/admin/event`, {
+            const response = await fetch(`${url}/admin/events`, {
                 method: "GET",
             });
 
