@@ -15,6 +15,7 @@ const firebaseConfig = {
   appId: process.env.REACT_APP_APP_ID,
   measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
+console.log(process.env.REACT_APP_API_KEY)
 
 const firebaseApp = initializeApp(firebaseConfig);
 
@@ -31,15 +32,13 @@ const CaForm = () => {
     console.log(fileName);
 
     getDownloadURL(ref(storage, `CAForm/${fileName}`)).then((url)=>{
-        console.log(url);
-        window.open(url, "_blank")
+      console.log(url);
+      window.open(url, "_blank")
     })
     .catch((err)=>{
-        console.log(err);
+      console.log(err);
     })
   }
-
-
 
   const fetchResponse = async () => {
     const collectionData = await getDocs(collection(db, "ca-form"));
@@ -49,7 +48,7 @@ const CaForm = () => {
       setResponse((prev) => {
         return [...prev, doc.data()];
       });
-      // console.log(doc.data());
+      console.log("firebase data", doc.data());
     });
   };
 
