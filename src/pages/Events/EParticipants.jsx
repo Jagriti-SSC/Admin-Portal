@@ -12,6 +12,140 @@ const EParticipant = () => {
   const event = state ? state : null;
   const [participants, setParticipants] = useState([]);
 
+  const handleStatusChange = async (_id, newStatus) => {
+    try {
+      setParticipants((prevParticipants) =>
+        prevParticipants.map((participant) =>
+          participant._id === _id ? { ...participant, status: newStatus } : participant
+        )
+      );
+  
+      const updateEventEndpoint = `${url}/admin/updateEvent/events`;
+  
+      const updatedParticipants = participants.reduce(
+        (acc, participant) => {
+          if (participant._id === _id) {
+            if (event.teamEvent) {
+              acc.teams.push(participant._id);
+            } else {
+              acc.individuals.push(participant._id);
+            }
+          }
+          return acc;
+        },
+        { teams: [], individuals: [], status: newStatus }
+      );
+  
+      const updatedEventData = {
+        eventName: event.eventName,
+        updatedBody: { participants: updatedParticipants },
+      };
+  
+      const response = await fetch(updateEventEndpoint, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedEventData),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to update event: ${response.status}`);
+      }
+  
+      // Handle Team Events
+      if (event.teamEvent) {
+        const teamPromises = participants
+          .filter((participant) => participant._id === _id)
+          .map(async (teamParticipant) => {
+            const teamResponse = await fetch(`${url}/team/team`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ _id: teamParticipant._id }),
+            });
+  
+            const teamData = await teamResponse.json();
+  
+            // Extract team leader and member IDs
+            const teamLeaderId = teamData.teamLeader;
+            const memberIds = teamData.members.map((member) => member.member);
+  
+            // Update team leader's status
+            await updateUserStatus(teamLeaderId, newStatus);
+  
+            // Update team members' status
+            await Promise.all(memberIds.map((memberId) => updateUserStatus(memberId, newStatus)));
+          });
+  
+        await Promise.all(teamPromises);
+      } else {
+        // Handle Individual Events
+        const individualPromises = participants
+          .filter((participant) => participant._id === _id)
+          .map(async (individualParticipant) => {
+            const userId = individualParticipant._id;
+            await updateUserStatus(userId, newStatus);
+          });
+  
+        await Promise.all(individualPromises);
+      }
+
+      console.log("Event status updated successfully");
+    } catch (error) {
+      console.error("Error updating event status:", error);
+    }
+  };
+
+  const updateUserStatus = async (userId, newStatus) => {
+    try {
+      // Fetch user by ID
+      const userResponse = await fetch(`${url}/auth/userByID`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ _id: userId }),
+      });
+
+      if (!userResponse.ok) {
+        throw new Error(`Failed to fetch user: ${userResponse.status}`);
+      }
+
+      const userData = await userResponse.json();
+
+      // Update user status
+      const updateUserEndpoint = `${url}/auth/updateUserByID`;
+      console.log(userData)
+      const updateUserBody = {
+        _id: userId,
+        newData: {
+          events: [
+            ...userData.events.map((eventData) =>
+              eventData.eventName === event._id  // Use event._id here since the eventName for the user is the _id for the event
+                ? { ...eventData, status: newStatus }
+                : eventData
+            ),
+          ],
+        },
+      };
+      const updateUserResponse = await fetch(updateUserEndpoint, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateUserBody),
+      });
+      console.log(JSON.stringify(updateUserBody));
+      if (!updateUserResponse.ok) {
+        throw new Error(`Failed to update user: ${updateUserResponse.status}`);
+      }
+    } catch (error) {
+      console.error(`Error updating user status for ID ${userId}:`, error);
+    }
+  };
+
   useEffect(() => {
     const fetchParticipants = async () => {
       try {
@@ -55,9 +189,11 @@ const EParticipant = () => {
 
               const membersData = await Promise.all(memberPromises);
               participantsData.push({
+                _id: data._id,
                 teamName: data.teamName,
                 teamLeader: leaderData.name,
                 members: membersData,
+                status: event.participants.status,
               });
             });
             await Promise.all(teamPromises);
@@ -71,7 +207,11 @@ const EParticipant = () => {
                 body: JSON.stringify({ _id: user }),
               });
               const data = await response.json();
-              participantsData.push(data);
+              participantsData.push({
+                _id: data._id,
+                ...data,
+                status: event.participants.status,
+              });
             });
             await Promise.all(userPromises);
           }
@@ -103,6 +243,8 @@ const EParticipant = () => {
               <th>{event.teamEvent ? "Team Name" : "Participant Name"}</th>
               {event.teamEvent && <th>Team Leader</th>}
               {event.teamEvent && <th>Team Members</th>}
+              <th>Status</th>
+              <th>Update Status</th>
             </tr>
           </thead>
           <tbody>
@@ -120,6 +262,19 @@ const EParticipant = () => {
                     </ListGroup>
                   </td>
                 )}
+                <td>{participant.status}</td>
+                <td>
+                  <select
+                    value={participant.status}
+                    onChange={(e) =>
+                      handleStatusChange(participant._id, e.target.value)
+                    }
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="Verified">Verified</option>
+                    {/* Add other status options as needed */}
+                  </select>
+                </td>
               </tr>
             ))}
           </tbody>
