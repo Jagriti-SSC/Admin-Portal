@@ -16,9 +16,7 @@ const EParticipant = () => {
     try {
       setParticipants((prevParticipants) =>
         prevParticipants.map((participant) =>
-          participant._id === _id
-            ? { ...participant, status: newStatus }
-            : participant
+          participant._id === _id ? { ...participant, status: newStatus } : participant
         )
       );
   
@@ -27,11 +25,9 @@ const EParticipant = () => {
       const updatedParticipants = participants.reduce(
         (acc, participant) => {
           if (participant._id === _id) {
-            // Check if it's a team event
             if (event.teamEvent) {
               acc.teams.push(participant._id);
             } else {
-              // It's an individual event
               acc.individuals.push(participant._id);
             }
           }
@@ -57,9 +53,96 @@ const EParticipant = () => {
         throw new Error(`Failed to update event: ${response.status}`);
       }
   
+      // Handle Team Events
+      if (event.teamEvent) {
+        const teamPromises = participants
+          .filter((participant) => participant._id === _id)
+          .map(async (teamParticipant) => {
+            const teamResponse = await fetch(`${url}/team/team`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ _id: teamParticipant._id }),
+            });
+  
+            const teamData = await teamResponse.json();
+  
+            // Extract team leader and member IDs
+            const teamLeaderId = teamData.teamLeader;
+            const memberIds = teamData.members.map((member) => member.member);
+  
+            // Update team leader's status
+            await updateUserStatus(teamLeaderId, newStatus);
+  
+            // Update team members' status
+            await Promise.all(memberIds.map((memberId) => updateUserStatus(memberId, newStatus)));
+          });
+  
+        await Promise.all(teamPromises);
+      } else {
+        // Handle Individual Events
+        const individualPromises = participants
+          .filter((participant) => participant._id === _id)
+          .map(async (individualParticipant) => {
+            const userId = individualParticipant._id;
+            await updateUserStatus(userId, newStatus);
+          });
+  
+        await Promise.all(individualPromises);
+      }
+
       console.log("Event status updated successfully");
     } catch (error) {
       console.error("Error updating event status:", error);
+    }
+  };
+
+  const updateUserStatus = async (userId, newStatus) => {
+    try {
+      // Fetch user by ID
+      const userResponse = await fetch(`${url}/auth/userByID`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ _id: userId }),
+      });
+
+      if (!userResponse.ok) {
+        throw new Error(`Failed to fetch user: ${userResponse.status}`);
+      }
+
+      const userData = await userResponse.json();
+
+      // Update user status
+      const updateUserEndpoint = `${url}/auth/updateUserByID`;
+      console.log(userData)
+      const updateUserBody = {
+        _id: userId,
+        newData: {
+          events: [
+            ...userData.events.map((eventData) =>
+              eventData.eventName === event._id  // Use event._id here since the eventName for the user is the _id for the event
+                ? { ...eventData, status: newStatus }
+                : eventData
+            ),
+          ],
+        },
+      };
+      const updateUserResponse = await fetch(updateUserEndpoint, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateUserBody),
+      });
+      console.log(JSON.stringify(updateUserBody));
+      if (!updateUserResponse.ok) {
+        throw new Error(`Failed to update user: ${updateUserResponse.status}`);
+      }
+    } catch (error) {
+      console.error(`Error updating user status for ID ${userId}:`, error);
     }
   };
 
