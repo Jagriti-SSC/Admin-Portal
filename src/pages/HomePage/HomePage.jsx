@@ -15,6 +15,31 @@ const HomePage = () => {
   ];
 
   return (
+
+
+      <div className="d-flex justify-content-center align-items-center flex-column">
+        <h1 className="m-2">Admin Portal</h1>
+        <Button className="m-1" variant="primary" onClick={()=> {navigate("/ca")}}>
+          CA Form Responses
+        </Button>
+        <Button className="m-1" variant="primary" onClick={()=> {navigate("/newsletter")}}>
+          Newsletter Responses
+        </Button>
+        <Button className="m-1" variant="primary" onClick={()=> {navigate("/users")}}>
+          User List
+        </Button>
+        <Button className="m-1" variant="primary" onClick={()=> {navigate("/events")}}>
+          Event List
+        </Button>
+        <Button className="m-1" variant="primary" onClick={()=> {navigate("/preevents")}}>
+          Pre-event List
+        </Button>
+        <Button className="m-1" variant="primary" onClick={()=> {navigate("/guesttalks")}}>
+          Guest Talk List
+        </Button>
+
+    </div>
+
     <Container className="text-center mt-5">
       <h1 className="mb-4">Admin Portal</h1>
       <Row className="justify-content-center">
