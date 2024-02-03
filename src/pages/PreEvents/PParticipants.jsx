@@ -6,7 +6,7 @@ import Button from "react-bootstrap/Button";
 
 const url = process.env.REACT_APP_BASE_URL;
 
-const Pparticipant = () => {
+const PParticipant = () => {
   const location = useLocation();
   const { state } = location;
   const event = state ? state : null;
@@ -19,28 +19,24 @@ const Pparticipant = () => {
           participant._id === _id ? { ...participant, status: newStatus } : participant
         )
       );
-  
+
       const updateEventEndpoint = `${url}/admin/updateEvent/preEvents`;
-  
-      const updatedParticipants = participants.reduce(
-        (acc, participant) => {
-          if (participant._id === _id) {
-            if (event.teamEvent) {
-              acc.teams.push(participant._id);
-            } else {
-              acc.individuals.push(participant._id);
-            }
-          }
-          return acc;
-        },
-        { teams: [], individuals: [], status: newStatus }
-      );
-  
       const updatedEventData = {
         eventName: event.eventName,
-        updatedBody: { participants: updatedParticipants },
+        updatedBody: {
+          participants: event.participants.map((participant) =>
+            (event.teamEvent && participant.teams === _id) ||
+            (!event.teamEvent && participant.individuals === _id)
+              ? {
+                  ...participant,
+                  status: newStatus,
+                }
+              : participant
+          ),
+        },
       };
-  
+
+      console.log(JSON.stringify(updatedEventData));
       const response = await fetch(updateEventEndpoint, {
         method: "PUT",
         headers: {
@@ -52,7 +48,7 @@ const Pparticipant = () => {
       if (!response.ok) {
         throw new Error(`Failed to update event: ${response.status}`);
       }
-  
+
       // Handle Team Events
       if (event.teamEvent) {
         const teamPromises = participants
@@ -65,20 +61,20 @@ const Pparticipant = () => {
               },
               body: JSON.stringify({ _id: teamParticipant._id }),
             });
-  
+
             const teamData = await teamResponse.json();
-  
+
             // Extract team leader and member IDs
             const teamLeaderId = teamData.teamLeader;
             const memberIds = teamData.members.map((member) => member.member);
-  
+
             // Update team leader's status
             await updateUserStatus(teamLeaderId, newStatus);
-  
+
             // Update team members' status
             await Promise.all(memberIds.map((memberId) => updateUserStatus(memberId, newStatus)));
           });
-  
+
         await Promise.all(teamPromises);
       } else {
         // Handle Individual Events
@@ -88,10 +84,10 @@ const Pparticipant = () => {
             const userId = individualParticipant._id;
             await updateUserStatus(userId, newStatus);
           });
-  
+
         await Promise.all(individualPromises);
       }
-  
+
       console.log("Event status updated successfully");
     } catch (error) {
       console.error("Error updating event status:", error);
@@ -152,14 +148,14 @@ const Pparticipant = () => {
         let participantsData = [];
 
         if (event && event.participants) {
-          if (event.teamEvent && event.participants.teams) {
-            const teamPromises = event.participants.teams.map(async (team) => {
+          if (event.teamEvent && event.participants.length > 0) {
+            const teamPromises = event.participants.map(async (participant) => {
               const response = await fetch(`${url}/team/team`, {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ _id: team }),
+                body: JSON.stringify({ _id: participant.teams }),
               });
               const data = await response.json();
 
@@ -180,39 +176,46 @@ const Pparticipant = () => {
                   },
                   body: JSON.stringify({ _id: member.member }),
                 });
+
                 const memberData = await memberResponse.json();
                 return {
                   ...memberData,
-                  status: member.status,
+                  status: participant.status,
                 };
               });
 
               const membersData = await Promise.all(memberPromises);
+
               participantsData.push({
                 _id: data._id,
                 teamName: data.teamName,
-                teamLeader: leaderData.name,
+                teamLeader: leaderData,
                 members: membersData,
-                status: event.participants.status,
+                status: participant.status,
+                driveUrl: participant.driveUrl
               });
             });
+
             await Promise.all(teamPromises);
-          } else if (!event.teamEvent && event.participants.individuals) {
-            const userPromises = event.participants.individuals.map(async (user) => {
+          } else if (!event.teamEvent && event.participants.length > 0) {
+            const userPromises = event.participants.map(async (participant) => {
               const response = await fetch(`${url}/auth/userByID`, {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ _id: user }),
+                body: JSON.stringify({ _id: participant.individuals }),
               });
               const data = await response.json();
+
               participantsData.push({
                 _id: data._id,
                 ...data,
-                status: event.participants.status,
+                status: participant.status,
+                driveUrl: participant.driveUrl
               });
             });
+
             await Promise.all(userPromises);
           }
         }
@@ -243,6 +246,8 @@ const Pparticipant = () => {
               <th>{event.teamEvent ? "Team Name" : "Participant Name"}</th>
               {event.teamEvent && <th>Team Leader</th>}
               {event.teamEvent && <th>Team Members</th>}
+              {!event.teamEvent && <th>Email ID</th>}
+              <th>Drive Url</th>
               <th>Status</th>
               <th>Update Status</th>
             </tr>
@@ -252,16 +257,18 @@ const Pparticipant = () => {
               <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{event.teamEvent ? participant.teamName : participant.name}</td>
-                {event.teamEvent && <td>{participant.teamLeader}</td>}
+                {!event.teamEvent && <td>{participant.email}</td>}
+                {event.teamEvent && <td>{participant.teamLeader.name}: {participant.teamLeader.email}</td>}
                 {event.teamEvent && (
                   <td>
                     <ListGroup>
                       {participant.members.map((member, memberIndex) => (
-                        <ListGroup.Item key={memberIndex}>{member.name}</ListGroup.Item>
+                        <ListGroup.Item key={memberIndex}>{member.name}: {member.email}</ListGroup.Item>
                       ))}
                     </ListGroup>
                   </td>
                 )}
+                <td>{participant.driveUrl}</td>
                 <td>{participant.status}</td>
                 <td>
                   <select
@@ -291,4 +298,4 @@ const Pparticipant = () => {
   );
 };
 
-export default Pparticipant;
+export default PParticipant;
