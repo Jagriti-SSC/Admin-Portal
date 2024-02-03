@@ -23,7 +23,7 @@ const AddGuestTalk = () => {
     const [eventImage, setEventImage] = useState(null);
     const [eventOverview, setEventOverview] = useState("");
     const [eventStatus, setEventStatus] = useState(true);
-    const [eventType, setEventType] = useState(true);
+    const eventType = false;
     const [contacts, setContacts] = useState([{ name: "", mobile: "" }]);
 
     const handleContactChange = (index, field, value) => {
@@ -137,9 +137,7 @@ const AddGuestTalk = () => {
 
                 <div className="mb-3">
                     <label className="form-label">Guest Talk Type:</label>
-                    <select className="form-select" onChange={(e) => setEventType(e.target.value === "false")} required>
-                        <option value="false">Individual</option>
-                    </select>
+                    <p>Individual</p>
                 </div>
 
                 <div className="mb-3">
