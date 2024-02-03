@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Col, Container, Row } from "react-bootstrap";
+import { Card, Col, Container, Row, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "./HomePage.css";
 const HomePage = () => {
@@ -15,49 +15,28 @@ const HomePage = () => {
   ];
 
   return (
-
-
-      <div className="d-flex justify-content-center align-items-center flex-column">
-        <h1 className="m-2">Admin Portal</h1>
-        <Button className="m-1" variant="primary" onClick={()=> {navigate("/ca")}}>
-          CA Form Responses
-        </Button>
-        <Button className="m-1" variant="primary" onClick={()=> {navigate("/newsletter")}}>
-          Newsletter Responses
-        </Button>
-        <Button className="m-1" variant="primary" onClick={()=> {navigate("/users")}}>
-          User List
-        </Button>
-        <Button className="m-1" variant="primary" onClick={()=> {navigate("/events")}}>
-          Event List
-        </Button>
-        <Button className="m-1" variant="primary" onClick={()=> {navigate("/preevents")}}>
-          Pre-event List
-        </Button>
-        <Button className="m-1" variant="primary" onClick={()=> {navigate("/guesttalks")}}>
-          Guest Talk List
-        </Button>
+    <div className="d-flex justify-content-center align-items-center flex-column">
+      <Container className="text-center mt-5">
+        <h1 className="mb-4">Admin Portal</h1>
+        <Row className="justify-content-center">
+          {buttons.map((button, index) => (
+            <Col key={index} xs={12} sm={6} md={4} lg={3} className="mb-3">
+              <Card
+                className="hover-card"
+                style={{ backgroundColor: button.color }}
+                onClick={() => navigate(button.path)}
+              >
+                <Card.Body>
+                  <Card.Title>{button.label}</Card.Title>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </Container>
 
     </div>
 
-    <Container className="text-center mt-5">
-      <h1 className="mb-4">Admin Portal</h1>
-      <Row className="justify-content-center">
-        {buttons.map((button, index) => (
-          <Col key={index} xs={12} sm={6} md={4} lg={3} className="mb-3">
-            <Card
-              className="hover-card"
-              style={{ backgroundColor: button.color }}
-              onClick={() => navigate(button.path)}
-            >
-              <Card.Body>
-                <Card.Title>{button.label}</Card.Title>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
-      </Row>
-    </Container>
   );
 };
 
