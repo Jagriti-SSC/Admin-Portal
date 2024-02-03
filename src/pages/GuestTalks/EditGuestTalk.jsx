@@ -26,7 +26,7 @@ const EditGuestTalk = () => {
     const [newEventImage, setNewEventImage] = useState(null);
     const [newEventOverview, setNewEventOverview] = useState(event.overview || "");
     const [newEventStatus, setNewEventStatus] = useState(event.status || true);
-    const [newEventType, setNewEventType] = useState(event.teamEvent || true);
+    const newEventType = false;
     const [newContacts, setNewContacts] = useState(event.contacts || []);
 
     useEffect(() => {
@@ -139,9 +139,7 @@ const EditGuestTalk = () => {
 
                 <div className="mb-3">
                     <label className="form-label">Guest Talk Type:</label>
-                    <select className="form-select" value={newEventType ? "true" : "false"} onChange={(e) => setNewEventType(e.target.value === "false")} required>
-                        <option value="false">Individual</option>
-                    </select>
+                    <p>Individual</p>
                 </div>
 
                 <div className="mb-3">
