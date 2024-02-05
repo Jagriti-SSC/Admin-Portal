@@ -21,8 +21,6 @@ import PParticipants from "./pages/PreEvents/PParticipants";
 import Login from "./Login";
 import { useEffect, useState } from "react";
 
-const url = process.env.REACT_APP_BASE_URL;
-
 function App() {
 
   const [logged, setLogged] = useState(false);
