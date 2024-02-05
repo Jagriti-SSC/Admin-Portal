@@ -30,7 +30,7 @@ function App() {
     console.log(sessionStorage.getItem("jagritisession76"))
     if(sessionStorage.getItem("jagritisession76") === null) {
       setLogged(false);
-      if (window.location.href === `${url}/`) console.log(window.location.href)
+      if (window.location.href === `https://jagriti-admin.netlify.app/`) console.log(window.location.href)
       else window.location.href = "/";
     };
   }, []);
