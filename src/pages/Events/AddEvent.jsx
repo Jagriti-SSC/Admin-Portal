@@ -114,7 +114,7 @@ const AddEvent = () => {
 
                 <div className="mb-3">
                     <label className="form-label">Event Link:</label>
-                    <input type="text" className="form-control" onChange={(e) => setEventLink(e.target.value)} required />
+                    <input type="text" className="form-control" onChange={(e) => setEventLink(e.target.value)}/>
                 </div>
 
                 <div className="mb-3">
@@ -124,7 +124,7 @@ const AddEvent = () => {
 
                 <div className="mb-3">
                     <label className="form-label">Event Overview:</label>
-                    <textarea className="form-control" onChange={(e) => setEventOverview(e.target.value)} required />
+                    <textarea className="form-control" onChange={(e) => setEventOverview(e.target.value)}/>
                 </div>
 
                 <div className="mb-3">
