@@ -80,6 +80,7 @@ const Events = () => {
             <th>Overview</th>
             <th>Status</th>
             <th>Type</th>
+            <th>Timeline</th>
             <th>Contacts</th>
             <th>Participants</th>
             <th>Actions</th>
@@ -97,6 +98,7 @@ const Events = () => {
               <td>{event.overview}</td>
               <td>{event.status ? 'Active' : 'Inactive'}</td>
               <td>{event.teamEvent ? 'Team' : 'Individual'}</td>
+              <td>{event.timeline}</td>
               <td>
                 <ListGroup>
                 {event.contacts.map((contact, contactIndex) => (

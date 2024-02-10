@@ -27,6 +27,7 @@ const EditPreEvent = () => {
     const [newEventOverview, setNewEventOverview] = useState(event.overview || "");
     const [newEventStatus, setNewEventStatus] = useState(event.status || true);
     const [newEventType, setNewEventType] = useState(event.teamEvent || true);
+    const [newEventTimeline, setNewEventTimeline] = useState(event.timeline || "");
     const [newContacts, setNewContacts] = useState(event.contacts || []);
 
     useEffect(() => {
@@ -72,6 +73,7 @@ const EditPreEvent = () => {
                     overview: newEventOverview,
                     status: newEventStatus,
                     teamEvent: newEventType,
+                    timeline: newEventTimeline,
                     contacts: newContacts,
                 },
             };
@@ -143,6 +145,11 @@ const EditPreEvent = () => {
                         <option value="true">Team</option>
                         <option value="false">Individual</option>
                     </select>
+                </div>
+
+                <div className="mb-3">
+                    <label className="form-label">Timeline:</label>
+                    <textarea className="form-control" value={newEventTimeline} onChange={(e) => setNewEventTimeline(e.target.value)} />
                 </div>
 
                 <div className="mb-3">

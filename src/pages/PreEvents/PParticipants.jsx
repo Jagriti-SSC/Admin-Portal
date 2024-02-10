@@ -192,7 +192,6 @@ const PParticipant = () => {
                 teamLeader: leaderData,
                 members: membersData,
                 status: participant.status,
-                driveUrl: participant.driveUrl
               });
             });
 
@@ -212,7 +211,6 @@ const PParticipant = () => {
                 _id: data._id,
                 ...data,
                 status: participant.status,
-                driveUrl: participant.driveUrl
               });
             });
 
@@ -247,7 +245,6 @@ const PParticipant = () => {
               {event.teamEvent && <th>Team Leader</th>}
               {event.teamEvent && <th>Team Members</th>}
               {!event.teamEvent && <th>Email ID</th>}
-              <th>Drive Url</th>
               <th>Status</th>
               <th>Update Status</th>
             </tr>
@@ -268,7 +265,6 @@ const PParticipant = () => {
                     </ListGroup>
                   </td>
                 )}
-                <td>{participant.driveUrl}</td>
                 <td>{participant.status}</td>
                 <td>
                   <select
