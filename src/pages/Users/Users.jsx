@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
+import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 
 const Users = () => {
@@ -8,6 +9,16 @@ const Users = () => {
   useEffect(() => {
     fetchUsersData();
   }, []);
+
+  const openImage = (imageURL) => {
+    console.log(imageURL);
+    try {
+      window.open(imageURL, "_blank")
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
 
   const fetchUsersData = async () => {
     try {
@@ -34,6 +45,7 @@ const Users = () => {
             <th>Name</th>
             <th>Email</th>
             <th>Mobile</th>
+            <th>Image</th>
             <th>College</th>
             <th>Course</th>
             <th>Year</th>
@@ -49,6 +61,9 @@ const Users = () => {
               <td>{user.name}</td>
               <td>{user.email}</td>
               <td>{user.mobile}</td>
+              <td>{
+                <Button onClick={() => openImage(user.imgUrl)}>Open Image</Button>
+              }</td>
               <td>{user.college}</td>
               <td>{user.course}</td>
               <td>{user.year}</td>
