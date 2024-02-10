@@ -12,6 +12,16 @@ const EParticipant = () => {
   const event = state ? state : null;
   const [participants, setParticipants] = useState([]);
 
+  const openImage = (imageURL) => {
+    console.log(imageURL);
+    try {
+      window.open(imageURL, "_blank")
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
+
   const handleStatusChange = async (_id, newStatus) => {
     try {
       setParticipants((prevParticipants) =>
@@ -245,6 +255,7 @@ const EParticipant = () => {
               {event.teamEvent && <th>Team Leader</th>}
               {event.teamEvent && <th>Team Members</th>}
               {!event.teamEvent && <th>Email ID</th>}
+              {!event.teamEvent && <th>Image</th>}
               <th>Status</th>
               <th>Update Status</th>
             </tr>
@@ -255,12 +266,13 @@ const EParticipant = () => {
                 <td>{index + 1}</td>
                 <td>{event.teamEvent ? participant.teamName : participant.name}</td>
                 {!event.teamEvent && <td>{participant.email}</td>}
-                {event.teamEvent && <td>{participant.teamLeader.name}: {participant.teamLeader.email}</td>}
+                {!event.teamEvent && <td><Button onClick={() => openImage(participant.imgUrl)}>Open Image</Button></td>}
+                {event.teamEvent && <td>{participant.teamLeader.name}: {participant.teamLeader.email} <Button onClick={() => openImage(participant.teamLeader.imgUrl)}>Open Image</Button></td>}
                 {event.teamEvent && (
                   <td>
                     <ListGroup>
                       {participant.members.map((member, memberIndex) => (
-                        <ListGroup.Item key={memberIndex}>{member.name}: {member.email}</ListGroup.Item>
+                        <ListGroup.Item key={memberIndex}>{member.name}: {member.email} <Button onClick={() => openImage(member.imgUrl)}>Open Image</Button></ListGroup.Item>
                       ))}
                     </ListGroup>
                   </td>
