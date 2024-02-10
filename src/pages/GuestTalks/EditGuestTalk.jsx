@@ -27,6 +27,7 @@ const EditGuestTalk = () => {
     const [newEventOverview, setNewEventOverview] = useState(event.overview || "");
     const [newEventStatus, setNewEventStatus] = useState(event.status || true);
     const newEventType = false;
+    const [newEventTimeline, setNewEventTimeline] = useState(event.timeline || "");
     const [newContacts, setNewContacts] = useState(event.contacts || []);
 
     useEffect(() => {
@@ -72,6 +73,7 @@ const EditGuestTalk = () => {
                     overview: newEventOverview,
                     status: newEventStatus,
                     teamEvent: newEventType,
+                    timeline: newEventTimeline,
                     contacts: newContacts,
                 },
             };
@@ -140,6 +142,11 @@ const EditGuestTalk = () => {
                 <div className="mb-3">
                     <label className="form-label">Guest Talk Type:</label>
                     <p>Individual</p>
+                </div>
+
+                <div className="mb-3">
+                    <label className="form-label">Timeline:</label>
+                    <textarea className="form-control" value={newEventTimeline} onChange={(e) => setNewEventTimeline(e.target.value)} />
                 </div>
 
                 <div className="mb-3">

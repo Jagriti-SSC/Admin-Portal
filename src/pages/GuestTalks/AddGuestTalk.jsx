@@ -24,6 +24,7 @@ const AddGuestTalk = () => {
     const [eventOverview, setEventOverview] = useState("");
     const [eventStatus, setEventStatus] = useState(true);
     const eventType = false;
+    const [eventTimeline, setEventTimeline] = useState("");
     const [contacts, setContacts] = useState([{ name: "", mobile: "" }]);
 
     const handleContactChange = (index, field, value) => {
@@ -61,6 +62,7 @@ const AddGuestTalk = () => {
                 overview: eventOverview,
                 status: eventStatus,
                 teamEvent: eventType,
+                timeline: eventTimeline,
                 contacts: contacts,
             };
 
@@ -138,6 +140,11 @@ const AddGuestTalk = () => {
                 <div className="mb-3">
                     <label className="form-label">Guest Talk Type:</label>
                     <p>Individual</p>
+                </div>
+
+                <div className="mb-3">
+                    <label className="form-label">Timeline:</label>
+                    <textarea className="form-control" onChange={(e) => setEventTimeline(e.target.value)} />
                 </div>
 
                 <div className="mb-3">

@@ -24,6 +24,7 @@ const AddEvent = () => {
     const [eventOverview, setEventOverview] = useState("");
     const [eventStatus, setEventStatus] = useState(true);
     const [eventType, setEventType] = useState(true);
+    const [eventTimeline, setEventTimeline] = useState("");
     const [contacts, setContacts] = useState([{ name: "", mobile: "" }]);
 
     const handleContactChange = (index, field, value) => {
@@ -61,6 +62,7 @@ const AddEvent = () => {
                 overview: eventOverview,
                 status: eventStatus,
                 teamEvent: eventType,
+                timeline: eventTimeline,
                 contacts: contacts,
             };
 
@@ -141,6 +143,11 @@ const AddEvent = () => {
                         <option value="true">Team</option>
                         <option value="false">Individual</option>
                     </select>
+                </div>
+
+                <div className="mb-3">
+                    <label className="form-label">Event Timeline:</label>
+                    <textarea className="form-control" onChange={(e) => setEventTimeline(e.target.value)}/>
                 </div>
 
                 <div className="mb-3">
