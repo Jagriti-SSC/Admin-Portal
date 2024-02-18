@@ -3,10 +3,45 @@ import { useLocation } from "react-router-dom";
 import Table from "react-bootstrap/Table";
 import ListGroup from "react-bootstrap/ListGroup";
 import Button from "react-bootstrap/Button";
+var XLSX = require("xlsx");
 
 const url = process.env.REACT_APP_BASE_URL;
 
 const PParticipant = () => {
+
+  const exportToExcel = () => {
+    let sheetData = {};
+
+    if (event.teamEvent) {
+      sheetData = participants.map((participant, index) => {
+        return {
+          'Team Name': participant.teamName,
+          'Team Leader Name': participant.teamLeader.name,
+          'Team Leader Email': participant.teamLeader.email,
+          'Team Members': participant.members.map(member => ({
+            'Member Name': member.name,
+            'Member Email': member.email,
+          })),
+          'Status': participant.status,
+        };
+      });
+    } else {
+      sheetData = participants.map((participant, index) => {
+        return {
+          'Participant Name': participant.name,
+          'Email ID': participant.email,
+          'Status': participant.status,
+        };
+      });
+    }
+ 
+    const ws = XLSX.utils.json_to_sheet(sheetData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Participants');
+    const fileName = `${event.eventName}.xlsx`; // Filename based on event name
+    XLSX.writeFile(wb, fileName);
+  };
+
   const location = useLocation();
   const { state } = location;
   const event = state ? state : null;
@@ -299,6 +334,9 @@ const PParticipant = () => {
       <div className="d-flex justify-content-center flex-row align-items-center">
         <Button variant="primary" onClick={() => window.history.back()}>
           Back to Pre Events
+        </Button>
+        <Button variant="success" className="m-3" onClick={exportToExcel}>
+          Export to Excel
         </Button>
       </div>
     </div>
