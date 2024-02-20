@@ -18,10 +18,6 @@ const GParticipant = () => {
           'Team Name': participant.teamName,
           'Team Leader Name': participant.teamLeader.name,
           'Team Leader Email': participant.teamLeader.email,
-          'Team Members': participant.members.map(member => ({
-            'Member Name': member.name,
-            'Member Email': member.email,
-          })),
           'Status': participant.status,
         };
       });
@@ -38,7 +34,7 @@ const GParticipant = () => {
     const ws = XLSX.utils.json_to_sheet(sheetData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Participants');
-    const fileName = `${event.eventName}.xlsx`; // Filename based on event name
+    const fileName = `${event.eventName}_Participants.xlsx`; // Filename based on event name
     XLSX.writeFile(wb, fileName);
   };
 
