@@ -10,31 +10,40 @@ const url = process.env.REACT_APP_BASE_URL;
 const GParticipant = () => {
 
   const exportToExcel = () => {
-    let sheetData = {};
-
+    const sheetData = [];
+  
+    // Add header row
     if (event.teamEvent) {
-      sheetData = participants.map((participant, index) => {
-        return {
-          'Team Name': participant.teamName,
-          'Team Leader Name': participant.teamLeader.name,
-          'Team Leader Email': participant.teamLeader.email,
-          'Status': participant.status,
-        };
-      });
+      sheetData.push(['Team ID', 'Team Name', 'Team Leader Name', 'Team Leader Email', 'Member Name', 'Member Email', 'Status']);
     } else {
-      sheetData = participants.map((participant, index) => {
-        return {
-          'Participant Name': participant.name,
-          'Email ID': participant.email,
-          'Status': participant.status,
-        };
-      });
+      sheetData.push(['Participant Name', 'Email ID', 'Status']);
     }
- 
-    const ws = XLSX.utils.json_to_sheet(sheetData);
+  
+    // Add data rows
+    participants.forEach((participant) => {
+      if (event.teamEvent) {
+        // Add team leader row
+        sheetData.push([participant._id, participant.teamName, participant.teamLeader.name, participant.teamLeader.email, '', '', participant.status]);
+  
+        // Add team members rows
+        participant.members.forEach((member) => {
+          sheetData.push([participant._id, participant.teamName, '', '', member.name, member.email, member.status]);
+        });
+      } else {
+        // Add individual participant row
+        sheetData.push([participant.name, participant.email, participant.status]);
+      }
+    });
+  
+    // Create worksheet
+    const ws = XLSX.utils.aoa_to_sheet(sheetData);
+  
+    // Create workbook
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Participants');
-    const fileName = `${event.eventName}_Participants.xlsx`; // Filename based on event name
+  
+    // Save workbook to file
+    const fileName = `${event.eventName}_Participants.xlsx`;
     XLSX.writeFile(wb, fileName);
   };
 
