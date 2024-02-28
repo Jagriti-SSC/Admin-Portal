@@ -11,37 +11,56 @@ const EParticipant = () => {
 
   const exportToExcel = () => {
     const sheetData = [];
-  
+
     // Add header row
     if (event.teamEvent) {
-      sheetData.push(['Team ID', 'Team Name', 'Team Leader Name', 'Team Leader Email', 'Member Name', 'Member Email', 'Status']);
+      sheetData.push(['Team ID', 'Team Name', 'Team Leader Name', 'Team Leader Email', 'Team Leader Mobile', 'Team Leader College' , 'Member Name', 'Member Email', 'Member Mobile', 'Member College', 'Status']);
     } else {
-      sheetData.push(['Participant Name', 'Email ID', 'Status']);
+      sheetData.push(['Participant Name', 'Email ID', 'Mobile Number', 'College', 'Status']);
     }
-  
+
     // Add data rows
     participants.forEach((participant) => {
       if (event.teamEvent) {
+
         // Add team leader row
-        sheetData.push([participant._id, participant.teamName, participant.teamLeader.name, participant.teamLeader.email, '', '', participant.status]);
-  
-        // Add team members rows
+        sheetData.push([participant._id, participant.teamName, participant.teamLeader.name, participant.teamLeader.email, participant.teamLeader.mobile, participant.teamLeader.college, '', '', '', '', participant.status]);
+
+        // Add team members rows with additional fields
         participant.members.forEach((member) => {
-          sheetData.push([participant._id, participant.teamName, '', '', member.name, member.email, member.status]);
+          sheetData.push([
+            participant._id,
+            participant.teamName,
+            '',
+            '',
+            '',
+            '',
+            member.name,
+            member.email,
+            member.mobile, // Add mobile number field
+            member.college, // Add college field
+            member.status
+          ]);
         });
       } else {
-        // Add individual participant row
-        sheetData.push([participant.name, participant.email, participant.status]);
+        // Add individual participant row with additional fields
+        sheetData.push([
+          participant.name,
+          participant.email,
+          participant.mobile, // Add mobile number field
+          participant.college, // Add college field
+          participant.status
+        ]);
       }
     });
-  
+
     // Create worksheet
     const ws = XLSX.utils.aoa_to_sheet(sheetData);
-  
+
     // Create workbook
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Participants');
-  
+
     // Save workbook to file
     const fileName = `${event.eventName}_Participants.xlsx`;
     XLSX.writeFile(wb, fileName);
@@ -69,7 +88,6 @@ const EParticipant = () => {
           participant._id === _id ? { ...participant, status: newStatus } : participant
         )
       );
-
       const updateEventEndpoint = `${url}/admin/updateEvent/events`;
       const updatedEventData = {
         eventName: event.eventName,

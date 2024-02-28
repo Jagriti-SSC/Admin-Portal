@@ -14,24 +14,43 @@ const PParticipant = () => {
   
     // Add header row
     if (event.teamEvent) {
-      sheetData.push(['Team ID', 'Team Name', 'Team Leader Name', 'Team Leader Email', 'Member Name', 'Member Email', 'Status']);
+      sheetData.push(['Team ID', 'Team Name', 'Team Leader Name', 'Team Leader Email', 'Team Leader Mobile', 'Team Leader College' , 'Member Name', 'Member Email', 'Member Mobile', 'Member College', 'Status']);
     } else {
-      sheetData.push(['Participant Name', 'Email ID', 'Status']);
+      sheetData.push(['Participant Name', 'Email ID', 'Mobile Number', 'College', 'Status']);
     }
-  
+
     // Add data rows
     participants.forEach((participant) => {
       if (event.teamEvent) {
+
         // Add team leader row
-        sheetData.push([participant._id, participant.teamName, participant.teamLeader.name, participant.teamLeader.email, '', '', participant.status]);
-  
-        // Add team members rows
+        sheetData.push([participant._id, participant.teamName, participant.teamLeader.name, participant.teamLeader.email, participant.teamLeader.mobile, participant.teamLeader.college, '', '', '', '', participant.status]);
+
+        // Add team members rows with additional fields
         participant.members.forEach((member) => {
-          sheetData.push([participant._id, participant.teamName, '', '', member.name, member.email, member.status]);
+          sheetData.push([
+            participant._id,
+            participant.teamName,
+            '',
+            '',
+            '',
+            '',
+            member.name,
+            member.email,
+            member.mobile, // Add mobile number field
+            member.college, // Add college field
+            member.status
+          ]);
         });
       } else {
-        // Add individual participant row
-        sheetData.push([participant.name, participant.email, participant.status]);
+        // Add individual participant row with additional fields
+        sheetData.push([
+          participant.name,
+          participant.email,
+          participant.mobile, // Add mobile number field
+          participant.college, // Add college field
+          participant.status
+        ]);
       }
     });
   
