@@ -43,28 +43,31 @@ const Events = () => {
   };
 
   const handleDelete = async (eventName) => {
-    try {
-      const deleteEvent = `${url}/admin/deleteEvent/events`;
-
-      // Send a DELETE request with the event name
-      const response = await fetch(deleteEvent, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ eventName: eventName }),
-      });
-
-      if (response.ok) {
-        console.log(`Event with Name ${eventName} deleted successfully.`);
-        // Fetch the updated events data after deletion
-        fetchEventsData();
-      } else {
-        console.error(`Failed to delete event with Name ${eventName}`);
+    if (window.confirm("Are you sure you want to delete this event")) {
+      try {
+        const deleteEvent = `${url}/admin/deleteEvent/events`;
+  
+        // Send a DELETE request with the event name
+        const response = await fetch(deleteEvent, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ eventName: eventName }),
+        });
+  
+        if (response.ok) {
+          console.log(`Event with Name ${eventName} deleted successfully.`);
+          // Fetch the updated events data after deletion
+          fetchEventsData();
+        } else {
+          console.error(`Failed to delete event with Name ${eventName}`);
+        }
+      } catch (error) {
+        console.error("Error deleting event:", error);
       }
-    } catch (error) {
-      console.error("Error deleting event:", error);
     }
+    
   };
 
   return (
