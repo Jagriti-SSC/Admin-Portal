@@ -86,6 +86,11 @@ const EditEvent = () => {
                 },
                 body: JSON.stringify({ eventName: event.eventName, updatedBody: updatedEventData.updatedBody }),
             });
+
+            // Show update alert and redirect
+            alert("Event updated successfully");
+            window.location.href = '/events';
+            
         } catch (error) {
             console.error("Error updating event:", error);
         }
