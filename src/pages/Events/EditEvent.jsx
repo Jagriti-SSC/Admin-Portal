@@ -25,8 +25,8 @@ const EditEvent = () => {
     const [newEventLink, setNewEventLink] = useState(event.link || "");
     const [newEventImage, setNewEventImage] = useState(null);
     const [newEventOverview, setNewEventOverview] = useState(event.overview || "");
-    const [newEventStatus, setNewEventStatus] = useState(event.status || true);
-    const [newEventType, setNewEventType] = useState(event.teamEvent || true);
+    const [newEventStatus, setNewEventStatus] = useState(event.status ?? true);
+    const [newEventType, setNewEventType] = useState(event.teamEvent ?? true);
     const [newEventTimeline, setNewEventTimeline] = useState(event.timeline || "");
     const [newContacts, setNewContacts] = useState(event.contacts || []);
 
