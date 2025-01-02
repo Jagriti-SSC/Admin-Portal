@@ -99,7 +99,7 @@ const AddGuestTalk = () => {
         
         if (!eventImage) {
             // Create a File object for DefaultImage.png
-            const response = await fetch(require('./DefaultImage.png'));
+            const response = await fetch(require('../Utilities/DefaultImage.png'));
             const blob = await response.blob();
             imageToUpload = new File([blob], 'DefaultImage.png', { type: blob.type });
         }
