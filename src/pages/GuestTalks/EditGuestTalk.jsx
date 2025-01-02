@@ -25,7 +25,7 @@ const EditGuestTalk = () => {
     const [newEventLink, setNewEventLink] = useState(event.link || "");
     const [newEventImage, setNewEventImage] = useState(null);
     const [newEventOverview, setNewEventOverview] = useState(event.overview || "");
-    const [newEventStatus, setNewEventStatus] = useState(event.status || true);
+    const [newEventStatus, setNewEventStatus] = useState(event.status ?? true);
     const newEventType = false;
     const [newEventTimeline, setNewEventTimeline] = useState(event.timeline || "");
     const [newContacts, setNewContacts] = useState(event.contacts || []);
@@ -86,6 +86,11 @@ const EditGuestTalk = () => {
                 },
                 body: JSON.stringify({ eventName: event.eventName, updatedBody: updatedEventData.updatedBody }),
             });
+
+            // Show update alert and redirect
+            alert("GuestTalk updated successfully");
+            window.location.href = '/guesttalks';
+            
         } catch (error) {
             console.error("Error updating event:", error);
         }
