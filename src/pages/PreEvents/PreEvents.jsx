@@ -43,6 +43,7 @@ const PreEvents = () => {
   };
 
   const handleDelete = async (eventName) => {
+  if (window.confirm("Are you sure you want to delete this pre event?")) {
     try {
       const deletePreEvent = `${url}/admin/deleteEvent/preEvents`;
 
@@ -65,7 +66,8 @@ const PreEvents = () => {
     } catch (error) {
       console.error("Error deleting event:", error);
     }
-  };
+  }
+};
 
   return (
     <div className="d-flex justify-content-center flex-column align-items-center">
