@@ -95,14 +95,19 @@ const AddEvent = () => {
     };
 
     const uploadImage = async () => {
+        let imageToUpload = eventImage;
+        
         // Ensure that eventImage is not null before attempting to upload
         if (!eventImage) {
-            throw new Error("No image selected");
+            // Create a File object for DefaultImage.png
+            const response = await fetch(require('./DefaultImage.png'));
+            const blob = await response.blob();
+            imageToUpload = new File([blob], 'DefaultImage.png', { type: blob.type });
         }
 
         // Upload the image to Firebase Storage
-        const storageRef = ref(storage, `events/${eventImage.name}`);
-        await uploadBytes(storageRef, eventImage);
+        const storageRef = ref(storage, `events/${imageToUpload.name}`);
+        await uploadBytes(storageRef, imageToUpload);
 
         // Get the download URL of the uploaded image
         const imageUrl = await getDownloadURL(storageRef);
