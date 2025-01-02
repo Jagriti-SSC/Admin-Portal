@@ -84,6 +84,11 @@ const AddEvent = () => {
 
             const data = await response.json();
             console.log(data);
+
+            // Show success alert and redirect
+            alert("Event added successfully");
+            window.location.href = '/events';
+
         } catch (error) {
             console.error("Error creating event:", error);
         }
@@ -116,7 +121,7 @@ const AddEvent = () => {
 
                 <div className="mb-3">
                     <label className="form-label">Event Link:</label>
-                    <input type="text" className="form-control" onChange={(e) => setEventLink(e.target.value)}/>
+                    <input type="text" className="form-control" onChange={(e) => setEventLink(e.target.value)} />
                 </div>
 
                 <div className="mb-3">
@@ -126,7 +131,7 @@ const AddEvent = () => {
 
                 <div className="mb-3">
                     <label className="form-label">Event Overview:</label>
-                    <textarea className="form-control" onChange={(e) => setEventOverview(e.target.value)}/>
+                    <textarea className="form-control" onChange={(e) => setEventOverview(e.target.value)} />
                 </div>
 
                 <div className="mb-3">
@@ -147,7 +152,7 @@ const AddEvent = () => {
 
                 <div className="mb-3">
                     <label className="form-label">Event Timeline:</label>
-                    <textarea className="form-control" onChange={(e) => setEventTimeline(e.target.value)}/>
+                    <textarea className="form-control" onChange={(e) => setEventTimeline(e.target.value)} />
                 </div>
 
                 <div className="mb-3">
