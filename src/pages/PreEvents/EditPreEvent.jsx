@@ -25,8 +25,8 @@ const EditPreEvent = () => {
     const [newEventLink, setNewEventLink] = useState(event.link || "");
     const [newEventImage, setNewEventImage] = useState(null);
     const [newEventOverview, setNewEventOverview] = useState(event.overview || "");
-    const [newEventStatus, setNewEventStatus] = useState(event.status || true);
-    const [newEventType, setNewEventType] = useState(event.teamEvent || true);
+    const [newEventStatus, setNewEventStatus] = useState(event.status ?? true);
+    const [newEventType, setNewEventType] = useState(event.teamEvent ?? true);
     const [newEventTimeline, setNewEventTimeline] = useState(event.timeline || "");
     const [newContacts, setNewContacts] = useState(event.contacts || []);
 
@@ -86,6 +86,11 @@ const EditPreEvent = () => {
                 },
                 body: JSON.stringify({ eventName: event.eventName, updatedBody: updatedEventData.updatedBody }),
             });
+
+            // Show update alert and redirect
+            alert("Prevent updated successfully");
+            window.location.href = '/preevents';
+            
         } catch (error) {
             console.error("Error updating event:", error);
         }
