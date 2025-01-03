@@ -66,7 +66,7 @@ const AddGuestTalk = () => {
                 contacts: contacts,
             };
 
-            console.log(eventData);
+            console.log(JSON.stringify(eventData));
 
             // POST request
             await fetch(`${url}/admin/createEvent/addGuestTalks`, {
@@ -84,20 +84,29 @@ const AddGuestTalk = () => {
 
             const data = await response.json();
             console.log(data);
+
+            // Show success alert and redirect
+            alert("Guest added successfully");
+            window.location.href = '/guesttalks';
+            
         } catch (error) {
             console.error("Error creating event:", error);
         }
     };
 
     const uploadImage = async () => {
-        // Ensure that eventImage is not null before attempting to upload
+        let imageToUpload = eventImage;
+        
         if (!eventImage) {
-            throw new Error("No image selected");
+            // Create a File object for DefaultImage.png
+            const response = await fetch(require('../Utilities/DefaultImage.png'));
+            const blob = await response.blob();
+            imageToUpload = new File([blob], 'DefaultImage.png', { type: blob.type });
         }
 
         // Upload the image to Firebase Storage
-        const storageRef = ref(storage, `guest-talks/${eventImage.name}`);
-        await uploadBytes(storageRef, eventImage);
+        const storageRef = ref(storage, `guest-talks/${imageToUpload.name}`);
+        await uploadBytes(storageRef, imageToUpload);
 
         // Get the download URL of the uploaded image
         const imageUrl = await getDownloadURL(storageRef);

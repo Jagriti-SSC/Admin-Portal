@@ -43,6 +43,7 @@ const GuestTalks = () => {
   };
 
   const handleDelete = async (eventName) => {
+  if (window.confirm("Are you sure you want to delete this guest talk?")) {
     try {
       const deleteGuestTalk = `${url}/admin/deleteEvent/guestTalks`;
 
@@ -65,7 +66,8 @@ const GuestTalks = () => {
     } catch (error) {
       console.error("Error deleting event:", error);
     }
-  };
+  }
+};
 
   return (
     <div className="d-flex justify-content-center flex-column align-items-center">
